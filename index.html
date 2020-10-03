@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/bulma.css">
+	<link rel="stylesheet" type="text/css" href="css/site.css">
+</head>
+
+<body>
+	<div class="container viewport">
+		<div id="settings">
+			<div class="row centered">
+				<div id="fromId" class="select">
+					<select></select>
+				</div>
+				<div id="toId" class="select">
+					<select></select>
+				</div>
+			</div>
+			<div class="row centered">
+				<button id="start" class="button is-success">Start</button>
+			</div>
+		</div>
+		<div id="test">
+			<label id="correctLabel" class="label"></label>
+			<label id="scoreLabel" class="label"></label>
+			<div id="testOptions"></div>
+		</div>
+	</div>
+
+	<script src="js/jquery.js"></script>
+	<script src="js/pokemons.js"></script>
+	<script type="text/javascript">
+		let $settings = $('#settings');
+		let $fromId = $('#fromId select');
+		let $toId = $('#toId select');
+		let $startBtn = $('#start');
+		let $test = $('#test');
+		let $correctLabel = $('#correctLabel');
+		let $scoreLabel = $('#scoreLabel');
+		let $testOptions = $('#testOptions');
+		let total = 0,
+			score = 0;
+		let correctId;
+		let minId, maxId;
+
+		Array.prototype.shuffle = function () {
+			var i = 0, j = 0, temp = null;
+
+			for (i = this.length - 1; i > 0; i--) {
+				j = random(0, this.length);
+				temp = this[i];
+				this[i] = this[j];
+				this[j] = temp;
+			}
+		}
+
+		$startBtn.on('click', start);
+
+		function start() {
+			total = 0, score = 0;
+			next();
+		}
+
+		function next() {
+			$settings.hide();
+			minId = +$fromId.val();
+			maxId = +$toId.val();
+			// let randomPokemons = get4RandomPokemons(minId, maxId);
+			correctId = random(minId, maxId);
+			let randomPokemons = getPokemonsOfDifferentGeneration(correctId);
+			displayOptions(randomPokemons);
+			$correctLabel.text('Pokemon #' + (correctId));
+
+		}
+
+		function random(min, max) {
+			return Math.floor(Math.random() * (max - min) + min);
+		}
+
+		function get4RandomPokemons(min, max) {
+			let randomPokemons = [];
+			correctId = random(min, max);
+			randomPokemons.push(pokemons[correctId - 1]);
+			for (var i = 0; i < 3; i++) {
+				let randomId = random(1, pokemons.length);
+				let randomPokemon = pokemons[randomId - 1];
+				if (randomPokemons.map(function (p) { return p.id; }).indexOf(randomPokemon) > -1) {
+					i--;
+					continue;
+				}
+				randomPokemons.push(randomPokemon);
+			}
+			randomPokemons.shuffle();
+			return randomPokemons;
+		}
+
+		function getPokemonsOfDifferentGeneration(pokemonId) {
+			pokemonId %= 100;
+			generations = pokemonId > 93 ? 9 : 10;
+			let randomPokemons = [];
+			for (let i = 0; i < generations; i++) {
+				let pId = pokemonId + 100 * i;
+				if (pId < minId || pId > maxId) {
+					continue;
+				}
+				randomPokemons.push(pokemons[pId - 1]);
+			}
+			randomPokemons.shuffle();
+			return randomPokemons;
+		}
+
+		function displayOptions(pokemonOptions) {
+			$testOptions.empty();
+			let $level = $('<div class="level"></div>');
+			for (var i = 0; i < pokemonOptions.length; i++) {
+				$level.append(`<img data-id="${pokemonOptions[i].id}" class="image is-96x96" src="images2/${pokemonOptions[i].id}.png"/>`);
+				//$level.append("\n");
+				$level.append(pokemonOptions[i].name);
+				//$level.append("\n");
+				//$level.append(pokemonOptions[i].id);
+			}
+			$testOptions.append($level);
+			$('.image[data-id]').on('click', clickPokemon);
+		}
+
+		function clickPokemon() {
+			let pokemonId = $(this).attr('data-id');
+			total++;
+			if (pokemonId == correctId) {
+				score++;
+			}
+			next();
+			$scoreLabel.text('Score: ' + score + '/' + total);
+		}
+
+		function bindKeys() {
+			$(document).on('keyup', function (e) {
+				if (e.which >= 48 && e.which <= 57) {
+					let index = e.which - 49;
+					// pressed 0 for 10th pokemon
+					if (index === -1) {
+						if ($testOptions.find('.level').children()[9] === undefined)
+							return;
+						$testOptions.find('.level').children()[9].click();
+						return;
+					}
+					if ($testOptions.find('.level').children()[index] === undefined)
+						return;
+					$testOptions.find('.level').children()[index].click();
+				}
+			});
+		}
+
+		// code flow
+		pokemons.sort(function (a, b) {
+			return a.id - b.id;
+		});
+		for (let i = 0; i < pokemons.length; i++) {
+			$fromId.append(`<option value="${i + 1}">${i + 1}</option>`);
+			$toId.append(`<option value="${i + 1}">${i + 1}</option>`);
+		}
+
+		$fromId.val(1);
+		$toId.val(pokemons.length);
+		bindKeys();
+
+	</script>
+</body>
+
+</html>
