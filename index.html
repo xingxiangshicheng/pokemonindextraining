@@ -98,7 +98,7 @@
 
 		function getPokemonsOfDifferentGeneration(pokemonId) {
 			pokemonId %= 100;
-			generations = pokemonId > 93 ? 9 : 10;
+			generations = pokemonId > 06 ? 10 : 11;
 			let randomPokemons = [];
 			for (let i = 0; i < generations; i++) {
 				let pId = pokemonId + 100 * i;
