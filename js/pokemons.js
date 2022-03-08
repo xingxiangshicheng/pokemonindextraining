@@ -9338,5 +9338,57 @@ pokemons = [
   {
     "name": "Zarude",
     "id": 893,
-  }
+  },
+  {
+    "name": "Regieleki",
+    "id": 894,
+  },
+  {
+    "name": "Regidrago",
+    "id": 895,
+  },
+  {
+    "name": "Glastrier",
+    "id": 896,
+  },
+  {
+    "name": "Spectrier",
+    "id": 897,
+  },
+  {
+    "name": "Calyrex",
+    "id": 898,
+  },
+  {
+    "name": "Wyrdeer",
+    "id": 899,
+  },
+  {
+    "name": "Kleavor",
+    "id": 900,
+  },
+  {
+    "name": "Ursaluna",
+    "id": 901,
+  },
+  {
+    "name": "Basculegion",
+    "id": 902,
+  },
+  {
+    "name": "	Sneasler",
+    "id": 903,
+  },
+  {
+    "name": "Overqwil",
+    "id": 904,
+  },
+  {
+    "name": "Enamorus",
+    "id": 905,
+  },
+  {
+    "name": "",
+    "id": 906,
+  },
 ]
